@@ -7,80 +7,91 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'odometer';
-  currentReading: string = '12345';
-  constructor() { }
 
+  private n: number = 123;
 
-  ngOnInit(): void {
-
+  reset(): number {
+    return (this.n = 123);
   }
 
-  nextReading() {
-
-    let nextReading = parseInt(this.currentReading);
-
-    nextReading++;
-
-    while (!this.isStrictlyIncreasing(nextReading)) {
-
-      nextReading++;
-
-    }
-
-    this.currentReading = nextReading.toString();
-
-    // if (this.isStrictlyIncreasing(nextReading)) {
-
-    //   this.currentReading = nextReading.toString();
-
-    // } else {
-    // }
-
+  getOdometer(): number {
+    return this.n;
   }
 
-  prevReading() {
-
-    let prevReading = parseInt(this.currentReading);
-
-    prevReading--;
-
-    while (!this.isStrictlyIncreasing(prevReading)) {
-
-      prevReading--;
-
-    }
-
- 
-
-    this.currentReading = prevReading.toString();
-
-    // if (this.isStrictlyIncreasing(prevReading)) {
-
-    //   this.currentReading = prevReading.toString();
-
-    // } else {
-
-    //   console.log('Invalid reading, cannot decrement.');
-
-    // }
-
-  }
-
-    isStrictlyIncreasing(num: number): boolean {
-
-    const digits = num.toString().split('').map(Number);
-
-    for (let i = 1; i < digits.length; i++) {
-
-      if (digits[i] <= digits[i - 1]) {
-
-        return false;
-
+  nextReading(): number {
+    let i: number = 1;
+    let count: number = this.largestNumber(123);
+    while (this.n < count) {
+      this.n = this.n + 1;
+      if (this.isAscending(this.n)) {
+        break;
       }
-
     }
-    return true;
-
+    return this.n;
   }
 
+  previousOdometer(): number {
+    let small: number = this.smallestNumber(123);
+    let large: number = this.largestNumber(123);
+    while (this.n >= small) {
+      if (this.n === small) {
+        return (this.n = large);
+      }
+      this.n = this.n - 1;
+      if (this.isAscending(this.n)) {
+        break;
+      }
+    }
+    return this.n;
+  }
+
+  largestNumber(n: number): number {
+    let count: number = 0;
+    let ans: number = 0;
+    count = this.countOfDigit(n);
+    for (let i = count; i > 0; i--) {
+      ans = ans * 10 + (10 - i);
+    }
+    return ans;
+  }
+
+  smallestNumber(n: number): number {
+    let ans: number = 0;
+    let count: number = 0;
+    count = this.countOfDigit(n);
+    for (let i = 1; i <= count; i++) {
+      ans = ans * 10 + i;
+    }
+    return ans;
+  }
+
+  countOfDigit(n: number): number {
+    let ans: number = 0;
+    let c: number = 0;
+    const numberList: number[] = [];
+    while (n !== 0) {
+      ans = n % 10;
+      numberList.push(ans);
+      n = Math.floor(n / 10);
+      c += 1;
+    }
+    return c;
+  }
+
+  isAscending(n: number): boolean {
+    let ans: number = 0;
+    let c: number = 0;
+    const numberList: number[] = [];
+    while (n !== 0) {
+      ans = n % 10;
+      numberList.push(ans);
+      n = Math.floor(n / 10);
+    }
+    for (let i = 1; i < numberList.length; i++) {
+      if (numberList[i - 1] > numberList[i]) {
+        c += 1;
+      }
+    }
+    return c + 1 === numberList.length;
+  }
 }
